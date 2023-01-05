@@ -3,6 +3,7 @@ import { reaction } from "mobx";
 import { Observer } from "mobx-react-lite";
 import { useEffect, useMemo, useState } from "react";
 import AppManager, { Screen } from "../../lib/AppManager";
+import { loadFinance, saveFinance } from "../../lib/FinanceManager";
 import { loadSettings, saveSettings } from "../../lib/SettingsManager";
 import { AppProvider, useApp } from "./AppProvider";
 import ItemList from "./ItemList";
@@ -65,13 +66,18 @@ const App = () => {
   const appManager = useMemo(() => new AppManager(), []);
 
   useEffect(() => {
-    console.log("Setting settings");
-    const settings = loadSettings();
-    appManager.settingsManager.setSettings(settings);
+    appManager.settingsManager.setSettings(loadSettings());
+    appManager.financeManager.setFinance(loadFinance());
   }, []);
 
   useEffect(() => {
     return reaction(() => appManager.settingsManager.settings, saveSettings, {
+      fireImmediately: false,
+    });
+  }, [appManager]);
+
+  useEffect(() => {
+    return reaction(() => appManager.financeManager.finance, saveFinance, {
       fireImmediately: false,
     });
   }, [appManager]);
