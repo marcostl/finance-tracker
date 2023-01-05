@@ -1,9 +1,8 @@
 import { useState } from "react";
 import {
   Account,
-  ExpenseCategory,
+  Category,
   ExpenseItem,
-  IncomeCategory,
   IncomeItem,
   Item,
 } from "../../lib/model/model";
@@ -25,10 +24,8 @@ const ItemType = ({
   );
 };
 
-const incomeCategories: IncomeCategory[] = [
-  { id: "0", name: "Salary", icon: "🏢" },
-];
-const expenseCategories: ExpenseCategory[] = [
+const incomeCategories: Category[] = [{ id: "0", name: "Salary", icon: "🏢" }];
+const expenseCategories: Category[] = [
   { id: "0", name: "Household", icon: "🏡" },
   { id: "1", name: "Bills", icon: "💡" },
   { id: "2", name: "Groceries", icon: "🛒" },
@@ -60,26 +57,26 @@ const NewItem = () => {
     console.log({ account });
     if (account === undefined) return;
 
+    const category = isIncome
+      ? incomeCategories.find((cat) => cat.id === categoryId)
+      : expenseCategories.find((cat) => cat.id === categoryId);
+    if (category === undefined) return;
+
     const item: Item = {
       id: uuid(),
       name: itemName,
       amount,
       account,
+      category,
       subcategory,
       date: `${Date.now()}`,
     };
 
     if (isIncome) {
-      const category = incomeCategories.find((cat) => cat.id === categoryId);
-      console.log({ category });
-      if (category === undefined) return;
-      const incomeItem: IncomeItem = { ...item, type: "income", category };
+      const incomeItem: IncomeItem = { ...item, type: "income" };
       financeManager.addIncomeItem(incomeItem);
     } else {
-      const category = expenseCategories.find((cat) => cat.id === categoryId);
-      console.log({ category });
-      if (category === undefined) return;
-      const expenseItem: ExpenseItem = { ...item, type: "expense", category };
+      const expenseItem: ExpenseItem = { ...item, type: "expense" };
       financeManager.addExpenseItem(expenseItem);
     }
   };
