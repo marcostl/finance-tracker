@@ -6,6 +6,7 @@ import AppManager, { Screen } from "../../lib/AppManager";
 import { loadFinance, saveFinance } from "../../lib/FinanceManager";
 import { loadSettings, saveSettings } from "../../lib/SettingsManager";
 import { AppProvider, useApp } from "./AppProvider";
+import Dashboard from "./dashboard/Dashboard";
 import ItemList from "./ItemList";
 import NewItem from "./NewItem";
 import Settings from "./settings/Settings";
@@ -100,6 +101,7 @@ const App = () => {
             </div>
             <Drawer show={showMenu} setShowMenu={setShowMenu} />
             <div className="h-[calc(100%-var(--navHeight))] px-2 pb-4 sm:px-0">
+              {appManager.screen === Screen.DASHBOARD && <Dashboard />}
               {appManager.screen === Screen.LIST && <ItemList />}
               {appManager.screen === Screen.NEW_ITEM && <NewItem />}
               {appManager.screen === Screen.SETTINGS && <Settings />}
